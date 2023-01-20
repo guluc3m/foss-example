@@ -33,7 +33,17 @@ CANTIDAD_ESTRELLAS = 100
 
 # ==== Código =============================================================== #
 
-import pyxel
+try:
+    import pyxel
+except ModuleNotFoundError:
+    import importlib
+    import sys
+    import os
+    path = '/'.join(sys.argv[0].split('/')[:-2])
+    sys.path.append(path)
+    sys.path.append("..")
+    pyxel = importlib.import_module("pyxel")
+
 import random
 import math
 import time
