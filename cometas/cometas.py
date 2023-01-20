@@ -8,7 +8,7 @@
 #
 # Puedes editar los sprites con el siguiente comando:
 #
-#   pyxeleditor cometas.pyxres
+#   ./pyxel.py edit cometas.pyxres
 #
 # ¡¡Pásatelo bien!!
 #

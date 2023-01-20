@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 import re
 import sys
-# from pyxel.editor import run
-from pyxel.editor import App
+from pyxel.cli import cli
 if __name__ == '__main__':
     sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    # sys.exit(run())
-    App(("new.pyxres" if len(sys.argv) == 1 else sys.argv[1]))
+    sys.exit(cli())
