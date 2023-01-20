@@ -209,7 +209,7 @@ class Estrella (Entidad):
 class Juego:
     def __init__ (self):
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
-        pyxel.load("cometas.pyxres", True, False, True, False)
+        pyxel.load("cometas.pyxres", True, False, True, True)
         self.puntuación = 0
         self.jugador = Jugador(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2)
         self.objetos = []
@@ -217,6 +217,7 @@ class Juego:
         self.fin = False
         for i in range(CANTIDAD_ESTRELLAS):
             self.estrellas.append(Estrella())
+        pyxel.playm(0, loop=True)
         pyxel.run(self.actualizar, self.dibujar)
 
     def actualizar (self):
