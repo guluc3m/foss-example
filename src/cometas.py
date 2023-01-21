@@ -8,7 +8,7 @@
 #
 # Puedes editar los sprites con el siguiente comando:
 #
-#   ./pyxel.py edit cometas.pyxres
+#   ./bin/pyxel edit resources/cometas.pyxres
 #
 # ¡¡Pásatelo bien!!
 #
@@ -29,24 +29,19 @@ COMETAS_MÁXIMOS = 100
 VELOCIDAD_COMETA = 90
 
 VELOCIDAD_ESTRELLA = 200
-CANTIDAD_ESTRELLAS = 100
+CANTIDAD_ESTRELLAS = 200
 
 # ==== Código =============================================================== #
-
-try:
-    import pyxel
-except ModuleNotFoundError:
-    import importlib
-    import sys
-    import os
-    path = '/'.join(sys.argv[0].split('/')[:-2])
-    sys.path.append(path)
-    sys.path.append("..")
-    pyxel = importlib.import_module("pyxel")
 
 import random
 import math
 import time
+import sys
+import os
+import importlib
+path = '/'.join(sys.argv[0].split('/')[:-1])
+sys.path.append(os.path.join(path, "..", "lib"))
+pyxel = importlib.import_module("pyxel")
 
 def texto (x, y, text, centrar):
     """
@@ -209,7 +204,8 @@ class Estrella (Entidad):
 class Juego:
     def __init__ (self):
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
-        pyxel.load("cometas.pyxres", True, False, True, True)
+        pyxel.load(os.path.join("..", "resources", "cometas.pyxres"),
+            True, True, True, True)
         self.puntuación = 0
         self.jugador = Jugador(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2)
         self.objetos = []
