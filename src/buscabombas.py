@@ -2,15 +2,15 @@
 
 FILAS = 8
 COLUMNAS = 8
-BOMBAS = 16
+BOMBAS = 10
 FPS = 30
 
 # 8x8  : 10 minas
 # 16x16: 40 minas
 # 30x16: 99 minas
 
-
-NO_CAMBIAR_EL_VALOR_DE_ESTA_VARIABLE_SI_QUIERES_SOBREVIVIR = False
+# No poner a True, vuelve el juego muy muy difícil  :)
+NO_CAMBIES_EL_VALOR_DE_ESTA_VARIABLE_SI_QUIERES_SEGUIR_VIVIENDO = False # :3
 
 # ==== Código =============================================================== #
 
@@ -56,6 +56,8 @@ class CampoDeMinas (Entidad):
             bombas = self.filas * self.columnas - 1
         elif bombas <= 0:
             bombas = 1
+        if NO_CAMBIES_EL_VALOR_DE_ESTA_VARIABLE_SI_QUIERES_SEGUIR_VIVIENDO:
+            bombas = int(0.8 * self.filas * self.columnas)
         self.cantidad = bombas
         posiciones = []
         for i in range(self.filas):
@@ -64,12 +66,39 @@ class CampoDeMinas (Entidad):
         # Generar matriz
         self.bombas = [[(False, 0) for _ in range(columnas)] for _ in range(filas)]
         self.marcadas = 0
+        self.descubiertas = 0
+        self.nuevo = True
+        self.lose = False
         for _ in range(bombas):
             (i, j) = posiciones.pop(random.randrange(len(posiciones)))
             self.bombas[i][j] = (False, -1)
 
-    def inundar (self):
-        pass
+    def __inundar (self):
+        DIRS = [-1, -1, 0, -1, 1, 0, 1, 1, -1]
+        for f in range(self.filas):
+            for c in range(self.columnas):
+                if self.bombas[f][c][1] != -1:
+                    cont = 0
+                    for i in range(8):
+                        x = c + DIRS[i]
+                        y = f + DIRS[i + 1]
+                        if 0 <= y < self.filas and 0 <= x < self.columnas:
+                            if self.bombas[y][x][1] == -1:
+                                cont += 1
+                    self.bombas[f][c] = (self.bombas[f][c][0], cont)
+
+    def __descubrir (self, x, y) -> bool:
+        DIRS = [0, 1, 0, -1, 0]
+        if 0 <= x < self.columnas and 0 <= y < self.filas:
+            (v, n) = self.bombas[y][x]
+            if v is not True and n != -1:
+                self.bombas[y][x] = (True, n)
+                self.descubiertas += 1
+                if v is None:
+                    self.marcadas -= 1
+                if n == 0:
+                    for i in range(4):
+                        self.__descubrir(x + DIRS[i], y + DIRS[i + 1])
 
     def altura_total (self) -> int:
         return self.filas * 16
@@ -90,14 +119,37 @@ class CampoDeMinas (Entidad):
         if r is None:
             return
         x, y = r
-        print(x, y)
+        if self.nuevo:
+            if self.bombas[y][x][1] == -1:
+                self.bombas[y][x] = (False, 0)
+                # Buscar otro
+                while True:
+                    i = random.randrange(self.filas)
+                    j = random.randrange(self.columnas)
+                    if i != x or j != y:
+                        self.bombas[i][j] = (False, -1)
+                        break
+            self.__inundar()
+            self.nuevo = False
+        if self.bombas[y][x][0] is not True:
+            if self.bombas[y][x][1] == -1:
+                self.lose = True
+                self.bombas[y][x] = (True, -1)
+            else:
+                self.__descubrir(x, y)
 
     def marcar (self, encabezado : int, borde : int):
         r = self.__raton(encabezado, borde)
         if r is None:
             return
         x, y = r
-        print(x, y)
+        (v, n) = self.bombas[y][x]
+        if v is False:
+            self.bombas[y][x] = (None, n)
+            self.marcadas += 1
+        elif v is None:
+            self.bombas[y][x] = (False, n)
+            self.marcadas -= 1
 
     def dibujar (self, encabezado : int, borde : int):
         for y in range(self.filas):
@@ -106,9 +158,33 @@ class CampoDeMinas (Entidad):
                 px = borde + x * 16
                 (v, n) = self.bombas[y][x]
                 if v is None:
-                    pyxel.blt(px, py, 0, 0, 16, 16, 16, 0xF)
+                    pyxel.blt(px, py, 0, 16, 0, 16, 16, 0xF)
                 elif v is False:
                     pyxel.blt(px, py, 0, 0, 0, 16, 16, 0xF)
+                else:
+                    if n != -1:
+                        pyxel.blt(px, py, 0, 16*n, 16, 16, 16, 0xF)
+                    else:
+                        if self.lose:
+                            pyxel.blt(px, py, 0, 48, 0, 16, 16, 0xF)
+                        else:
+                            pyxel.blt(px, py, 0, 32, 0, 16, 16, 0xF)
+
+    def fin (self) -> bool:
+        if self.lose:
+            return False
+        elif self.filas * self.columnas - self.descubiertas <= self.cantidad:
+            # Descubrir el resto
+            for i in range(self.filas):
+                for j in range(self.columnas):
+                    (v, n) = self.bombas[i][j]
+                    if v is False:
+                        self.marcadas += 1
+                    self.descubiertas += 1
+                    self.bombas[i][j] = (True, n)
+            return True
+        else:
+            return None
 
 class Juego:
     def __init__ (self):
@@ -122,7 +198,7 @@ class Juego:
         self.borde = (ANCHURA_PANTALLA - self.campo.anchura_total()) // 2
         self.arriba = MENU_ALTURA
         self.anchura = ANCHURA_PANTALLA
-        self.status = 0
+        self.estado = 0
         self.tiempo = 0
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
         pyxel.load(os.path.join("..", "resources", "buscabombas.pyxres"),
@@ -131,12 +207,18 @@ class Juego:
         pyxel.run(self.actualizar, self.dibujar)
 
     def actualizar (self):
-        dt = 1 / FPS
-        self.tiempo += dt
-        if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-            self.campo.actualizar(dt, self.arriba, self.borde)
-        elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
-            self.campo.marcar(self.arriba, self.borde)
+        estado = self.campo.fin()
+        if estado is True:
+            self.estado = 1
+        elif estado is False:
+            self.estado = 3
+        else:
+            dt = 1 / FPS
+            self.tiempo += dt
+            if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
+                self.campo.actualizar(dt, self.arriba, self.borde)
+            elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
+                self.campo.marcar(self.arriba, self.borde)
 
     def dibujar (self):
         pyxel.cls(0xD)
@@ -162,6 +244,8 @@ class Juego:
         pyxel.blt(self.anchura-16, 0, 0, 80, 0, 16, 16, 0xF)
         pyxel.blt(0, alt, 0, 144, 0, 16, 16, 0xF)
         pyxel.blt(self.anchura-16, alt, 0, 128, 0, 16, 16, 0xF)
+        pyxel.blt(0, 48, 0, 176, 0, 16, 16, 0xF)
+        pyxel.blt(self.anchura-16, 48, 0, 160, 0, 16, 16, 0xF)
         for x in range(16, self.anchura - 16, 16):
             pyxel.blt(x, 0, 0, 64, 0, 16, 16, 0xF)
             pyxel.blt(x, 48, 0, 64, 0, 16, 16, 0xF)
@@ -173,10 +257,10 @@ class Juego:
             pyxel.blt(0, y, 0, 96, 0, 16, 16, 0xF)
             pyxel.blt(self.anchura-16, y, 0, 96, 0, 16, 16, 0xF)
         # Carita en el medio
-        pyxel.blt(self.anchura // 2 - 16, 16, 0, self.status*32, 32, 32, 32, 0xF)
+        pyxel.blt(self.anchura // 2 - 16, 16, 0, self.estado*32, 32, 32, 32, 0xF)
         # Números
         self.numero(int(self.tiempo), 16, 16)
-        self.numero(int(self.tiempo), self.anchura - 16 - 48, 16)
+        self.numero(int(self.campo.marcadas), self.anchura - 16 - 48, 16)
 
 if __name__ == "__main__":
     Juego ()
