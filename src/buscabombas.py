@@ -23,6 +23,7 @@ import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])
 sys.path.append(os.path.join(path, "..", "lib"))
 pyxel = importlib.import_module("pyxel")
+sys.setrecursionlimit(100000000)
 
 class Entidad:
     def __init__ (self):
