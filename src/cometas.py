@@ -28,8 +28,8 @@ VELOCIDAD_JUGADOR = 80
 COMETAS_MÁXIMOS = 100
 VELOCIDAD_COMETA = 90
 
-VELOCIDAD_ESTRELLA = 200
-CANTIDAD_ESTRELLAS = 200
+VELOCIDAD_ESTRELLA = 800
+CANTIDAD_ESTRELLAS = 400
 
 # ==== Código =============================================================== #
 
