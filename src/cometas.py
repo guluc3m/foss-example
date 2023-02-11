@@ -35,9 +35,9 @@ CANTIDAD_ESTRELLAS = 400
 
 import random
 import math
-import time
 import sys
 import os
+# import pyxel
 import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])
 sys.path.append(os.path.join(path, "..", "lib"))
@@ -201,6 +201,31 @@ class Estrella (Entidad):
         pyxel.line(self.x, self.y, self.px, self.py, 13)
         pyxel.rect(self.x, self.y, self.anchura, self.altura, 7)
 
+
+class Música:
+    def __init__(self) -> None:
+        self.state = 0
+        
+        # Menú principal
+        pyxel.playm(1, loop=True)
+    
+    def actualizar(self, game_state):
+        # No tienes que actualizar nada
+        if game_state == self.state:
+            return
+
+        # Música del juego
+        if game_state == 1:
+            pyxel.stop()
+            pyxel.playm(0, loop=True)
+            self.state = 1
+
+        elif game_state == 2:
+            pyxel.stop()
+            pyxel.playm(2, loop=False)
+            self.state = 2
+
+
 class Juego:
     def __init__ (self):
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
@@ -211,9 +236,10 @@ class Juego:
         self.objetos = []
         self.estrellas = []
         self.fin = False
-        for i in range(CANTIDAD_ESTRELLAS):
+        self.state = 1
+        for _ in range(CANTIDAD_ESTRELLAS):
             self.estrellas.append(Estrella())
-        pyxel.playm(0, loop=True)
+        self.musica = Música()
         pyxel.run(self.actualizar, self.dibujar)
 
     def actualizar (self):
@@ -236,8 +262,11 @@ class Juego:
             if len(colisiones) != 0:
                 self.fin = True
         else:
+            self.state = 2
             if pyxel.btn(pyxel.KEY_ESCAPE):
                 pyxel.quit()
+
+        self.musica.actualizar(self.state)
 
     def dibujar (self):
         pyxel.cls(0)
