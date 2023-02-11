@@ -1,7 +1,7 @@
 # ==== Constantes =========================================================== #
 
-FILAS = 8
-COLUMNAS = 8
+FILAS = 4
+COLUMNAS = 4
 BOMBAS = 10
 FPS = 30
 
@@ -171,18 +171,22 @@ class CampoDeMinas (Entidad):
                         else:
                             pyxel.blt(px, py, 0, 32, 0, 16, 16, 0xF)
 
+    def __descubrir_todo (self):
+       # Descubrir el resto
+       for i in range(self.filas):
+           for j in range(self.columnas):
+               (v, n) = self.bombas[i][j]
+               if v is False:
+                   self.marcadas += 1
+               self.descubiertas += 1
+               self.bombas[i][j] = (True, n)
+
     def fin (self) -> bool:
         if self.lose:
+            self.__descubrir_todo()
             return False
         elif self.filas * self.columnas - self.descubiertas <= self.cantidad:
-            # Descubrir el resto
-            for i in range(self.filas):
-                for j in range(self.columnas):
-                    (v, n) = self.bombas[i][j]
-                    if v is False:
-                        self.marcadas += 1
-                    self.descubiertas += 1
-                    self.bombas[i][j] = (True, n)
+            self.__descubrir_todo()
             return True
         else:
             return None
