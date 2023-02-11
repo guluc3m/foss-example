@@ -12,8 +12,8 @@
 #
 # ¡¡Pásatelo bien!!
 #
-# AUTOR : José Antonio Verde Jiménez
-# FECHA : 2023-01-20
+# AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
+# FECHA   : 2023-01-20
 
 # ==== Constantes =========================================================== #
 

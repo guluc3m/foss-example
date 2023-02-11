@@ -1,3 +1,20 @@
+#!/usr/bin/env  python3
+# *-* encoding=utf8 *-*
+
+# === Buscabombas ===
+# Un pequeño juego que consiste en evitar los cometas con la nave. Puedes
+# modificar las constantes que aparecen a continuación en mayúscula para ver
+# cómo cambia el juego.
+#
+# Puedes editar los sprites con el siguiente comando:
+#
+#   ./bin/pyxel edit resources/buscabombas.pyxres
+#
+# ¡¡Pásatelo bien!!
+#
+# AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
+# FECHA   : 2023-02-11
+
 # ==== Constantes =========================================================== #
 
 FILAS = 4
