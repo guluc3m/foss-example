@@ -18,6 +18,7 @@ VELOCIDAD_PELOTA = 3
 RADIO_PELOTA = 10
 TAMAÑO_JUGADORES = 45
 
+# === Código ==============================================================#
 import math 
 import random
 import sys
@@ -122,3 +123,5 @@ class Juego():
 
 if __name__ == "__main__":
     Juego ()
+
+# === Fin del archivo ================================================================================#
