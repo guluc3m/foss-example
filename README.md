@@ -6,13 +6,13 @@ Por Luis Daniel Casais Mezquida, Jose Antonio Verde Jiménez y Daniel Gómez Sch
 Ejemplo de un repositorio FOSS para el taller "Linux y el Open Source Software" de la Jornada de Institutos del T3chFest Ed Day 2023.
 
 ## Introducción
-Éste paquete es un ejemplo de Free Open Source Software, escrito en Python, y pensado para ejecutarse en Linux.  
+Éste paquete es un ejemplo de Free Open Source Software, escrito en [Python](https://www.python.org/), y pensado para ejecutarse en Linux.  
 
 Incluye 4 juegos clásicos, listos para ser jugados y modificados:
-- `src/cometas.py`: Esquivar asteroides con tu nave
-- `src/buscabombas.py`: Recreación del clásico Buscaminas de Microsoft
-- `src/arkanoid.py`: Recreación del clásico Arkanoid
-- `src/pong.py`: Recreación del clásico Pong, con multijugador en un teclado
+- [`src/cometas.py`](src/cometas.py): Esquivar asteroides con tu nave
+- [`src/buscabombas.py`](src/buscabombas.py): Recreación del clásico Buscaminas de Microsoft
+- [`src/arkanoid.py`](src/arkanoid.py): Recreación del clásico Arkanoid
+- [`src/pong.py`](src/pong.py): Recreación del clásico Pong, con multijugador en un teclado
 
 
 ## Prerequisitos
@@ -28,7 +28,7 @@ Puedes instalar la librería usando:
 pip install pyxel
 ```
 
-En caso de que no puedas instalarla, el repositorio viene con la librería incluída en `lib/` y el script principal en `bin/pyxel`.
+En caso de que no puedas instalarla, el repositorio viene con la librería incluída en [`lib/`](lib/) y el script principal en [`bin/pyxel`](bin/pyxel).
 
 
 ## Instalación
@@ -82,15 +82,25 @@ Para activar ésta _feature_ es necesario crear un archivo <!-- TODO: finish thi
 ## Modificando los juegos
 Al tener el código fuente de los juegos, puedes editarlos y dejarlos a tu gusto.
 
-### Parámetros
+### Constantes
+Cada juego tiene ciertas variables constantes, o parámetros, ya sea la velocidad o el tamaño de los objetos, etc.  
+Al modificar éstos parametros cambias el comportamiento del juego.  
 
+En éstos juegos éstos parámetros están definidos por variables en mayúsculas al principio del archivo.
+
+Para editar el código fuente basta con usar un editor de texto y pasar el archivo como argumento:
 ```bash
-gedit
+gedit <juego>.py
+```
+
+E.g.:
+```bash
+gedit src/cometas.py
 ```
 
 ### Recursos
 Los recursos de un juego son los sprites, la música, y los sonidos.  
-Los puedes encontrar dentro del directorio `resources/`.
+Los puedes encontrar dentro del directorio [`resources/`](resources/).
 
 Pyxel incluye un editor de sprites, de sonidos y de música.  
 Para editar los recursos de un juego basta con llamar a la librería, el argumento `edit`, y el archivo `.pyxres` donde se guardan los recursos.
@@ -116,3 +126,5 @@ python3 bin/pyxel edit resources/cometas.pyxres
 
 ## Información extra
 Puedes ver un resumen de cómo funciona la terminal en [`apuntes_terminal.md`](./apuntes_terminal.md).
+
+<!-- TODO: add links -->
