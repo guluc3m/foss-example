@@ -17,8 +17,8 @@
 
 # ==== Constantes =========================================================== #
 
-ANCHURA_PANTALLA = 200
-ALTURA_PANTALLA = 200
+ANCHURA_PANTALLA = 256
+ALTURA_PANTALLA = 256
 FPS = 60
 
 ANCHURA_JUGADOR = 10
@@ -38,6 +38,7 @@ import math
 import sys
 import os
 # import pyxel
+from puntuaciones import Puntuaciones
 import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])
 sys.path.append(os.path.join(path, "..", "lib"))
@@ -228,22 +229,47 @@ class Música:
 
 class Juego:
     def __init__ (self):
-        pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
+        pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS,
+            quit_key=pyxel.KEY_NONE)
         pyxel.load(os.path.join("..", "resources", "cometas.pyxres"),
             True, True, True, True)
+        # state:
+        #   0 : Portada
+        #   1 : Jugando
+        #   2 : Perdiste :(
+        #   3 : Puntuaciones
+        self.state = 0
+        self.reset()
+        self.puntuaciones = Puntuaciones("cometas")
+        pyxel.run(self.actualizar, self.dibujar)
+
+    def reset (self):
+        self.fin = False
         self.puntuación = 0
         self.jugador = Jugador(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2)
+        self.cursor = 0
         self.objetos = []
         self.estrellas = []
-        self.fin = False
-        self.state = 1
         for _ in range(CANTIDAD_ESTRELLAS):
             self.estrellas.append(Estrella())
         self.musica = Música()
-        pyxel.run(self.actualizar, self.dibujar)
 
     def actualizar (self):
-        if not self.fin:
+        if self.state == 0:
+            if pyxel.btnp (pyxel.KEY_UP):
+                self.cursor -= 1
+            if pyxel.btnp (pyxel.KEY_DOWN):
+                self.cursor += 1
+            self.cursor = self.cursor % 3
+            if pyxel.btnp (pyxel.KEY_RETURN):
+                if self.cursor == 0:
+                    self.state = 1
+                elif self.cursor == 1:
+                    self.state = 3
+                elif self.cursor == 2:
+                    del self.puntuaciones
+                    pyxel.quit()
+        elif self.state == 1:
             dt = 1 / FPS
             colisiones = []
             for objeto in self.objetos:
@@ -260,27 +286,30 @@ class Juego:
             self.puntuación += 100 / FPS
             # Si se choca pierde.
             if len(colisiones) != 0:
-                self.fin = True
-        else:
-            self.state = 2
-            if pyxel.btn(pyxel.KEY_ESCAPE):
-                pyxel.quit()
+                self.state = 2
+        elif self.state == 2:
+            if pyxel.btnp(pyxel.KEY_RETURN):
+                self.reset()
 
         self.musica.actualizar(self.state)
 
     def dibujar (self):
         pyxel.cls(0)
-        for estrella in self.estrellas:
-            estrella.dibujar()
-        for objeto in self.objetos:
-            objeto.dibujar()
-        self.jugador.dibujar()
-        s = str(int(self.puntuación))
-        s = "0" * (8 - len(s)) + s
-        texto(0, 0, s, False)
-        if self.fin:
-            texto(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2,
-                "Perdiste..., Pulsa ESCAPE para salir.", True)
+        if self.state == 0:
+            pyxel.blt(0, 0, 1, 0, 0, 256, 256, 0)
+            pyxel.blt(88, 172 + 3 + self.cursor * 16, 0, 0, 64, 8, 8, 0)
+        elif self.state == 1 or self.state == 2:
+            for estrella in self.estrellas:
+                estrella.dibujar()
+            for objeto in self.objetos:
+                objeto.dibujar()
+            self.jugador.dibujar()
+            s = str(int(self.puntuación))
+            s = "0" * (8 - len(s)) + s
+            texto(0, 0, s, False)
+            if self.state == 2:
+                texto(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2,
+                    "Perdiste..., Pulsa ESCAPE para salir.", True)
 
 if __name__ == "__main__":
     Juego ()
