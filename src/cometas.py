@@ -29,7 +29,7 @@ COMETAS_MÁXIMOS = 100
 VELOCIDAD_COMETA = 90
 
 VELOCIDAD_ESTRELLA = 800
-CANTIDAD_ESTRELLAS = 400
+CANTIDAD_ESTRELLAS = 200
 
 # ==== Código =============================================================== #
 

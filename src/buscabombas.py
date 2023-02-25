@@ -1,7 +1,7 @@
 # ==== Constantes =========================================================== #
 
-FILAS = 4
-COLUMNAS = 4
+FILAS = 8
+COLUMNAS = 8
 BOMBAS = 10
 FPS = 30
 
