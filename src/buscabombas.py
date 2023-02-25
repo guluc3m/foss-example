@@ -1,3 +1,20 @@
+#!/usr/bin/env  python3
+# *-* encoding=utf8 *-*
+
+# === Buscabombas ===
+# Un pequeño juego que consiste en evitar los cometas con la nave. Puedes
+# modificar las constantes que aparecen a continuación en mayúscula para ver
+# cómo cambia el juego.
+#
+# Puedes editar los sprites con el siguiente comando:
+#
+#   ./bin/pyxel edit resources/buscabombas.pyxres
+#
+# ¡¡Pásatelo bien!!
+#
+# AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
+# FECHA   : 2023-02-11
+
 # ==== Constantes =========================================================== #
 
 FILAS = 8
@@ -15,10 +32,9 @@ NO_CAMBIES_EL_VALOR_DE_ESTA_VARIABLE_SI_QUIERES_SEGUIR_VIVIENDO = False # :3
 # ==== Código =============================================================== #
 
 import random
-import math
-import time
 import sys
 import os
+# import pyxel
 import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])
 sys.path.append(os.path.join(path, "..", "lib"))
@@ -191,6 +207,36 @@ class CampoDeMinas (Entidad):
         else:
             return None
 
+class Sonido:
+    def __init__(self) -> None:
+        self.tick = 0
+        self.fin = False
+    
+    def actualizar(self, tiempo = 0, fin = False):
+        game_tick = int(tiempo)
+
+        if fin:
+            if not self.fin:
+                self.fin = True
+                pyxel.play(0, 4, loop = False)
+
+            return
+
+        if game_tick == self.tick:
+            return
+
+        # tic
+        if game_tick % 2:
+            pyxel.play(0, 0, loop = False)
+            self.tick = game_tick
+
+        # toc
+        else:
+            self.tick = game_tick
+            pyxel.play(0, 1, loop = False)
+
+
+
 class Juego:
     def __init__ (self):
         # Iniciar pyxel
@@ -205,6 +251,7 @@ class Juego:
         self.anchura = ANCHURA_PANTALLA
         self.estado = 0
         self.tiempo = 0
+        self.sonido = Sonido()
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
         pyxel.load(os.path.join("..", "resources", "buscabombas.pyxres"),
             True, True, True, True)
@@ -217,9 +264,11 @@ class Juego:
             self.estado = 1
         elif estado is False:
             self.estado = 3
+            self.sonido.actualizar(fin = True)
         else:
             dt = 1 / FPS
             self.tiempo += dt
+            self.sonido.actualizar(tiempo = self.tiempo)
             if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
                 self.campo.actualizar(dt, self.arriba, self.borde)
             elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
