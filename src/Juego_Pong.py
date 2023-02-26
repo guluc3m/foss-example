@@ -5,6 +5,9 @@
 # Clásico juego de ping pong multijugador
 # Las teclas "w" y "s" (arriba y abajo) controlan la pala de la izquierda 
 # Las flechas del teclado controlan el movimiento de la pala de la derecha 
+# Pulsar "esc" o "q" para salir.
+#
+# Puedes modificar las constantes del juego en el apartado "CONSTANTES"
 #
 # AUTOR : Daniel Gómez Schwartz
 # FECHA : 2023-02-18
@@ -15,7 +18,7 @@ ANCHURA_PANTALLA = 400
 FPS = 30
 VELOCIDAD_JUGADOR = 2
 VELOCIDAD_PELOTA = 3
-RADIO_PELOTA = 10
+RADIO_PELOTA = 5
 TAMAÑO_JUGADORES = 45
 
 # === Código ==============================================================#
