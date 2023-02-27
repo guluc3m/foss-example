@@ -1,8 +1,8 @@
 #!/usr/bin/env  python3
 
 # === Puntuaciones ===
-# AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
-# FECHA   : 2023-02-25
+# AUTOR : José Antonio Verde Jiménez
+# FECHA : 2023-02-25
 
 import os
 import sys
