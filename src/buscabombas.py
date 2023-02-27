@@ -2,9 +2,9 @@
 # *-* encoding=utf8 *-*
 
 # === Buscabombas ===
-# Un pequeño juego que consiste en evitar los cometas con la nave. Puedes
-# modificar las constantes que aparecen a continuación en mayúscula para ver
-# cómo cambia el juego.
+# Un clon del buscaminas. Trata de liberar todos los huecos que no tienen
+# minas. El número que aparece en pantalla indica cuántas minas contiguas
+# (incluidas las diagonales) hay.
 #
 # Puedes editar los sprites con el siguiente comando:
 #

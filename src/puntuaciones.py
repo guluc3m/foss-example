@@ -1,8 +1,12 @@
-#!/usr/bin/env  python3
+# *-* encoding=utf8 *-*
 
 # === Puntuaciones ===
+# Muestra por pantalla las puntuaciones. Necesita que exista un archivo *.pts
+# con las puntuaciones. Elimina las líneas mal formateadas. Y este archivo se
+# puede crear durante la ejecución del programa.
+#
 # AUTOR : José Antonio Verde Jiménez
-# FECHA : 2023-02-25
+# FECHA : 2022-01-26
 
 import os
 import sys
