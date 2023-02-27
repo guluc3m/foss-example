@@ -241,7 +241,7 @@ class Juego:
         self.state = 0
         self.reset()
         self.puntuaciones = Puntuaciones("cometas", ANCHURA_PANTALLA,
-            ALTURA_PANTALLA, digitos=8, reverso=False, controles = [
+            ALTURA_PANTALLA, digitos=8, reverso=True, controles = [
             # ("Click Izquierdo", "Descubrir espacio"),
             # ("Click Derecho",   "Marcar espacio"),
             ("W/Arriba",        "Arriba"),

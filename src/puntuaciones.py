@@ -34,7 +34,10 @@ class Puntuaciones:
         self.__color = 0
         self.altura = altura
         self.digitos = digitos
-        self.reverso = reverso
+        if reverso:
+            self.key = lambda x : -x[1]
+        else:
+            self.key = lambda x : x[1]
         self.controles = controles
         self.puntos = -1
         self.iniciales = ""
@@ -80,7 +83,7 @@ class Puntuaciones:
                             print("¡¡PUNTUACIÓN NO ENTERA!!")
                         else:
                             self.datos.append((dato[0], int(dato[1])))
-                self.datos = sorted(self.datos, reverse=True, key=lambda x : x[1])
+                self.datos = sorted(self.datos, key=self.key)
                 self.archivo.close()
                 self.archivo = open(self.nombre, 'w')
                 self.__volcar()
@@ -134,7 +137,7 @@ class Puntuaciones:
                 self.iniciales = self.iniciales[:-1]
             if pyxel.btnp(pyxel.KEY_RETURN):
                 self.datos.append((self.iniciales, self.puntos))
-                self.datos = sorted(self.datos, reverse=True, key=lambda x : x[1])
+                self.datos = sorted(self.datos, key=self.key)
                 self.modo = self.MOSTRANDO
                 self.__volcar()
         elif self.modo == self.MOSTRANDO:

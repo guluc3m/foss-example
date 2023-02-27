@@ -22,8 +22,8 @@ COLUMNAS = 8
 BOMBAS = 10
 FPS = 30
 
-FILAS = 8
-COLUMNAS = 8
+# FILAS = 20
+# COLUMNAS = 20
 
 # 8x8  : 10 minas
 # 16x16: 40 minas
@@ -37,12 +37,32 @@ NO_CAMBIES_EL_VALOR_DE_ESTA_VARIABLE_SI_QUIERES_SEGUIR_VIVIENDO = False # :3
 import random
 import sys
 import os
-# import pyxel
+from puntuaciones import Puntuaciones
 import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])
 sys.path.append(os.path.join(path, "..", "lib"))
 pyxel = importlib.import_module("pyxel")
 sys.setrecursionlimit(100000000)
+
+def texto (x, y, text, centrar):
+    """
+    Esta función dibuja una caja texto centrada (o no) en la posición (x, y).
+    """
+    b = 4
+    w = len(text) * 4 + b - 1
+    h = 7 + b
+    c1 = 2
+    c2 = 7
+    if not centrar:
+        pyxel.rect(x, y, w, h, c1)
+        pyxel.rectb(x, y, w, h, c2)
+        pyxel.text(x + b//2, y + b//2, text, c1)
+        pyxel.text(x + b//2, y + b//2 + 1, text, c2)
+    else:
+        pyxel.rect(x - w//2, y - h//2, w, h, c1)
+        pyxel.rectb(x - w//2, y - h//2, w, h, c2)
+        pyxel.text(x - w//2 + b//2, y - h//2 + b//2, text, c1)
+        pyxel.text(x - w//2 + b//2, y - h//2 + b//2 + 1, text, c2)
 
 class Entidad:
     def __init__ (self):
@@ -195,8 +215,8 @@ class CampoDeMinas (Entidad):
        for i in range(self.filas):
            for j in range(self.columnas):
                (v, n) = self.bombas[i][j]
-               if v is False:
-                   self.marcadas += 1
+               # if v is False:
+               #     self.marcadas += 1
                self.descubiertas += 1
                self.bombas[i][j] = (True, n)
 
@@ -242,9 +262,11 @@ class Sonido:
 class Juego:
     PORTADA = 0
     JUGANDO = 1
+    PUNTUACIONES = 2
+    MAX_TIMEOUT = FPS * 4
     def __init__ (self):
         # Iniciar pyxel
-        self.campo = CampoDeMinas(FILAS, COLUMNAS, BOMBAS)
+        self.reset()
         BORDE = 16
         MENU_ANCHURA = 32 + 8 + 8 + 16 * 3 + 16 * 3 + BORDE * 2
         MENU_ALTURA = 32 + BORDE * 2
@@ -255,24 +277,41 @@ class Juego:
         self.borde = (ANCHURA_PANTALLA - self.campo.anchura_total()) // 2
         self.arriba = MENU_ALTURA
         self.anchura = ANCHURA_PANTALLA
-        self.estado = 0
-        self.tiempo = 0
-        self.modo = self.JUGANDO # self.PORTADA
-        self.sonido = Sonido()
-        pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
+        pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS, quit_key=pyxel.KEY_NONE)
         pyxel.load(os.path.join("..", "resources", "buscabombas.pyxres"),
             True, True, True, True)
-        pyxel.mouse(True)
+        self.puntuaciones = Puntuaciones("buscabombas", ANCHURA_PANTALLA,
+            ALTURA_PANTALLA, digitos=3, reverso=False, controles = [
+            ("Click Izquierdo", "Descubrir espacio"),
+            ("Click Derecho",   "Marcar espacio"),
+            ("Escape",          "Volver")])
         pyxel.run(self.actualizar, self.dibujar)
+
+    def reset (self):
+        self.campo = CampoDeMinas(FILAS, COLUMNAS, BOMBAS)
+        self.estado = 0
+        self.tiempo = 0
+        self.timeout = 0
+        self.cursor = 0
+        self.modo = self.PORTADA
+        self.sonido = Sonido()
 
     def actualizar (self):
         if self.modo == self.JUGANDO:
+            pyxel.mouse(True)
             estado = self.campo.fin()
             if estado is True:
                 self.estado = 1
+                self.timeout += 1
+                if self.timeout >= self.MAX_TIMEOUT and pyxel.btnp(pyxel.KEY_RETURN):
+                    self.puntuaciones.añadir(int(self.tiempo))
+                    self.modo = self.PUNTUACIONES
             elif estado is False:
                 self.estado = 3
                 self.sonido.actualizar(fin = True)
+                self.timeout += 1
+                if self.timeout >= self.MAX_TIMEOUT and pyxel.btnp(pyxel.KEY_RETURN):
+                    self.modo = self.PORTADA
             else:
                 dt = 1 / FPS
                 self.tiempo += dt
@@ -282,15 +321,44 @@ class Juego:
                 elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
                     self.campo.marcar(self.arriba, self.borde)
         elif self.modo == self.PORTADA:
-            pass
+            pyxel.mouse(False)
+            if pyxel.btnp (pyxel.KEY_DOWN):
+                self.cursor += 1
+            if pyxel.btnp (pyxel.KEY_UP):
+                self.cursor -= 1
+            self.cursor = self.cursor % 3
+            if pyxel.btnp (pyxel.KEY_RETURN):
+                if self.cursor == 0:
+                    self.reset()
+                    self.modo = self.JUGANDO
+                elif self.cursor == 1:
+                    self.puntuaciones.mostrar()
+                    self.modo = self.PUNTUACIONES
+                elif self.cursor == 2:
+                    del self.puntuaciones
+                    pyxel.quit()
+        elif self.modo == self.PUNTUACIONES:
+            pyxel.mouse(False)
+            if self.puntuaciones.actualizar ():
+                self.modo = self.PORTADA
 
     def dibujar (self):
-        pyxel.cls(0xD)
+        pyxel.cls(0x0)
         if self.modo == self.JUGANDO:
+            pyxel.cls(0xD)
             self.dibujar_menu()
             self.campo.dibujar(self.arriba, self.borde)
+            if self.timeout >= self.MAX_TIMEOUT:
+                texto(pyxel.width//2, pyxel.height//2,
+                    "Pulsa Enter para continuar...", True)
         elif self.modo == self.PORTADA:
-            pyxel.blt(0, 0, 1, 0, 0, 256, 256, 0xD)
+            pyxel.cls(0x9)
+            offx = max(0, (pyxel.width - 256) // 2)
+            offy = max(0, (pyxel.height - 256) // 2)
+            pyxel.blt(offx, offy, 1, 0, 0, 256, 256)
+            pyxel.blt(offx + 108, offy + 196 + self.cursor * 16, 0, 0, 96, 8, 8, 0x0);
+        elif self.modo == self.PUNTUACIONES:
+            self.puntuaciones.dibujar()
 
     def numero (self, n, x, y):
         g = [(n // 100) % 10, (n // 10) % 10, n % 10]
@@ -327,7 +395,7 @@ class Juego:
         pyxel.blt(self.anchura // 2 - 16, 16, 0, self.estado*32, 32, 32, 32, 0xF)
         # Números
         self.numero(int(self.tiempo), 16, 16)
-        self.numero(int(self.campo.marcadas), self.anchura - 16 - 48, 16)
+        self.numero(int(self.campo.cantidad - self.campo.marcadas), self.anchura - 16 - 48, 16)
 
 if __name__ == "__main__":
     Juego ()
