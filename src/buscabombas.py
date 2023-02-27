@@ -22,6 +22,9 @@ COLUMNAS = 8
 BOMBAS = 10
 FPS = 30
 
+FILAS = 8
+COLUMNAS = 8
+
 # 8x8  : 10 minas
 # 16x16: 40 minas
 # 30x16: 99 minas
@@ -236,8 +239,9 @@ class Sonido:
             pyxel.play(0, 1, loop = False)
 
 
-
 class Juego:
+    PORTADA = 0
+    JUGANDO = 1
     def __init__ (self):
         # Iniciar pyxel
         self.campo = CampoDeMinas(FILAS, COLUMNAS, BOMBAS)
@@ -246,11 +250,14 @@ class Juego:
         MENU_ALTURA = 32 + BORDE * 2
         ANCHURA_PANTALLA = max(MENU_ANCHURA, BORDE*2+self.campo.anchura_total())
         ALTURA_PANTALLA = MENU_ALTURA + BORDE + self.campo.altura_total()
+        ANCHURA_PANTALLA = max(256, ANCHURA_PANTALLA)
+        ALTURA_PANTALLA = max(256, ALTURA_PANTALLA)
         self.borde = (ANCHURA_PANTALLA - self.campo.anchura_total()) // 2
         self.arriba = MENU_ALTURA
         self.anchura = ANCHURA_PANTALLA
         self.estado = 0
         self.tiempo = 0
+        self.modo = self.JUGANDO # self.PORTADA
         self.sonido = Sonido()
         pyxel.init(ANCHURA_PANTALLA, ALTURA_PANTALLA, fps=FPS)
         pyxel.load(os.path.join("..", "resources", "buscabombas.pyxres"),
@@ -259,25 +266,31 @@ class Juego:
         pyxel.run(self.actualizar, self.dibujar)
 
     def actualizar (self):
-        estado = self.campo.fin()
-        if estado is True:
-            self.estado = 1
-        elif estado is False:
-            self.estado = 3
-            self.sonido.actualizar(fin = True)
-        else:
-            dt = 1 / FPS
-            self.tiempo += dt
-            self.sonido.actualizar(tiempo = self.tiempo)
-            if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-                self.campo.actualizar(dt, self.arriba, self.borde)
-            elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
-                self.campo.marcar(self.arriba, self.borde)
+        if self.modo == self.JUGANDO:
+            estado = self.campo.fin()
+            if estado is True:
+                self.estado = 1
+            elif estado is False:
+                self.estado = 3
+                self.sonido.actualizar(fin = True)
+            else:
+                dt = 1 / FPS
+                self.tiempo += dt
+                self.sonido.actualizar(tiempo = self.tiempo)
+                if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
+                    self.campo.actualizar(dt, self.arriba, self.borde)
+                elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
+                    self.campo.marcar(self.arriba, self.borde)
+        elif self.modo == self.PORTADA:
+            pass
 
     def dibujar (self):
         pyxel.cls(0xD)
-        self.dibujar_menu()
-        self.campo.dibujar(self.arriba, self.borde)
+        if self.modo == self.JUGANDO:
+            self.dibujar_menu()
+            self.campo.dibujar(self.arriba, self.borde)
+        elif self.modo == self.PORTADA:
+            pyxel.blt(0, 0, 1, 0, 0, 256, 256, 0xD)
 
     def numero (self, n, x, y):
         g = [(n // 100) % 10, (n // 10) % 10, n % 10]

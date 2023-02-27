@@ -240,7 +240,15 @@ class Juego:
         #   3 : Puntuaciones
         self.state = 0
         self.reset()
-        self.puntuaciones = Puntuaciones("cometas")
+        self.puntuaciones = Puntuaciones("cometas", ANCHURA_PANTALLA,
+            ALTURA_PANTALLA, digitos=8, reverso=False, controles = [
+            # ("Click Izquierdo", "Descubrir espacio"),
+            # ("Click Derecho",   "Marcar espacio"),
+            ("W/Arriba",        "Arriba"),
+            ("S/Abajo",         "Abajo"),
+            ("A/Izquierda",     "Izquierda"),
+            ("D/Derecha",       "Derecha"),
+            ("Escape",          "Volver")])
         pyxel.run(self.actualizar, self.dibujar)
 
     def reset (self):
@@ -266,6 +274,7 @@ class Juego:
                     self.state = 1
                 elif self.cursor == 1:
                     self.state = 3
+                    self.puntuaciones.mostrar()
                 elif self.cursor == 2:
                     del self.puntuaciones
                     pyxel.quit()
@@ -289,7 +298,12 @@ class Juego:
                 self.state = 2
         elif self.state == 2:
             if pyxel.btnp(pyxel.KEY_RETURN):
+                self.puntuaciones.añadir(int(self.puntuación))
+                self.state = 3
                 self.reset()
+        elif self.state == 3:
+            if self.puntuaciones.actualizar():
+                self.state = 0
 
         self.musica.actualizar(self.state)
 
@@ -309,9 +323,16 @@ class Juego:
             texto(0, 0, s, False)
             if self.state == 2:
                 texto(ANCHURA_PANTALLA // 2, ALTURA_PANTALLA // 2,
-                    "Perdiste..., Pulsa ESCAPE para salir.", True)
+                    "Perdiste..., Pulsa ENTER para continuar.", True)
+        elif self.state == 3:
+            self.puntuaciones.dibujar()
 
 if __name__ == "__main__":
-    Juego ()
+    try:
+        j = Juego ()
+    except KeyboardInterrupt:
+        del j.puntuaciones
+    else:
+        del j.puntuaciones
 
 # ==== Fin del Archivo ====================================================== #
