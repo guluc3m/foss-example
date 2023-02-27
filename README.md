@@ -29,6 +29,10 @@ pip install pyxel
 ```
 
 En caso de que no puedas instalarla, el repositorio viene con la librería incluída en [`lib/`](lib/) y el script principal en [`bin/pyxel`](bin/pyxel).
+En caso de no tener `libSDL2 2.0` (dependencia de pyxel), haz:
+```bash
+export LD_LIBRARY_PATH="$(pwd)/lib/libSDL2-2.0.so.0"
+```
 
 
 ## Instalación
@@ -76,7 +80,11 @@ python3 bin/pyxel run src/cometas.py
 ### Rankings
 Tres de los cuatro juegos (Buscabombas, Cometas, y Arkanoid) cuentan con un sistema de rankings en el que se guardan las puntuaciones de los jugadores.  
 
-Para activar ésta _feature_ es necesario crear un archivo <!-- TODO: finish this shit -->
+Para activar ésta _feature_ es necesario crear un archivo `<juego>.pts` en la raíz del directorio.  
+E.g.:
+```bash
+touch cometas.pts
+```
 
 
 ## Modificando los juegos
@@ -125,6 +133,6 @@ python3 bin/pyxel edit resources/cometas.pyxres
 ```
 
 ## Información extra
-Puedes ver un resumen de cómo funciona la terminal en [`apuntes_terminal.md`](./apuntes_terminal.md).
+Puedes ver un resumen de cómo funciona la terminal en [`apuntes_terminal.md`](./apuntes_terminal.md).  
 
-<!-- TODO: add links -->
+Link a las transparencias [aquí](https://cloud-gul.uc3m.es/s/85zY9cAeS3CixaQ).
