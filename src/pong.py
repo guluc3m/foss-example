@@ -97,9 +97,11 @@ class Juego():
 
         #Colisión con palas
         if self.Pelota.pos.x - RADIO_PELOTA <= self.Jugador_a.x + 20 and self.Pelota.pos.y <= self.Jugador_a.y + TAMAÑO_JUGADORES and self.Pelota.pos.y >= self.Jugador_a.y:
+            self.Pelota.pos.x = 0 + (TAMAÑO_JUGADORES / 4.5) +15
             self.Pelota.vel.x = -self.Pelota.vel.x 
 
         if self.Pelota.pos.x + RADIO_PELOTA >= self.Jugador_b.x and self.Pelota.pos.y <= self.Jugador_b.y + TAMAÑO_JUGADORES and self.Pelota.pos.y >= self.Jugador_b.y:
+            self.Pelota.pos.x = ANCHURA_PANTALLA - (TAMAÑO_JUGADORES / 4.5) -15
             self.Pelota.vel.x = -self.Pelota.vel.x 
 
         #Puntos
