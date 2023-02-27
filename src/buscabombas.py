@@ -6,14 +6,15 @@
 # minas. El número que aparece en pantalla indica cuántas minas contiguas
 # (incluidas las diagonales) hay.
 #
-# Puedes editar los sprites con el siguiente comando:
-#
-#   ./bin/pyxel edit resources/buscabombas.pyxres
+# CONTROLES: 
+# Click Izquierdo --- Descubrir espacio
+# Click Derecho ----- Marcar espacio
+# Escape ------------ Volver
 #
 # ¡¡Pásatelo bien!!
 #
 # AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
-# FECHA   : 2023-02-11
+# FECHA   : 2023-02-27
 
 # ==== Constantes =========================================================== #
 

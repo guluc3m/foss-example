@@ -1,6 +1,14 @@
 #!/usr/bin/env  python3
 # *-* encoding=utf8 *-*
 
+# AVISO: éste juego está rotísimo y a medio hacer...
+# ¡Oh, las bondades del FOSS!
+
+# Controles: sí
+
+# AUTOR : José Antonio Verde Jiménez
+# FECHA : 2023-02-27
+
 import pyxel
 import math
 

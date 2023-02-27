@@ -6,14 +6,17 @@
 # modificar las constantes que aparecen a continuación en mayúscula para ver
 # cómo cambia el juego.
 #
-# Puedes editar los sprites con el siguiente comando:
-#
-#   ./bin/pyxel edit resources/cometas.pyxres
+# CONTROLES: 
+# W/Arriba ------ Arriba
+# S/Abajo ------- Abajo
+# A/Izquierda --- Izquierda
+# D/Derecha ----- Derecha
+# Escape -------- Volver
 #
 # ¡¡Pásatelo bien!!
 #
 # AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
-# FECHA   : 2023-01-20
+# FECHA   : 2023-02-27
 
 # ==== Constantes =========================================================== #
 
@@ -216,15 +219,20 @@ class Música:
             return
 
         # Música del juego
-        if game_state == 1:
+        if game_state == 1:  # game
             pyxel.stop()
             pyxel.playm(0, loop=True)
             self.state = 1
 
-        elif game_state == 2:
+        elif game_state == 2:  # loss
             pyxel.stop()
             pyxel.playm(2, loop=False)
             self.state = 2
+        
+        elif game_state == 3 and self.state != 0:  # points
+            pyxel.stop()
+            pyxel.playm(1, loop=True)
+            self.state = 3
 
 
 class Juego:
@@ -242,8 +250,6 @@ class Juego:
         self.reset()
         self.puntuaciones = Puntuaciones("cometas", ANCHURA_PANTALLA,
             ALTURA_PANTALLA, digitos=8, reverso=True, controles = [
-            # ("Click Izquierdo", "Descubrir espacio"),
-            # ("Click Derecho",   "Marcar espacio"),
             ("W/Arriba",        "Arriba"),
             ("S/Abajo",         "Abajo"),
             ("A/Izquierda",     "Izquierda"),

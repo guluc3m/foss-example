@@ -31,7 +31,7 @@ pip install pyxel
 En caso de que no puedas instalarla, el repositorio viene con la librería incluída en [`lib/`](lib/) y el script principal en [`bin/pyxel`](bin/pyxel).
 En caso de no tener `libSDL2 2.0` (dependencia de pyxel), haz:
 ```bash
-export LD_LIBRARY_PATH="$(pwd)/lib/libSDL2-2.0.so.0"
+export LD_LIBRARY_PATH="$(pwd)/lib"
 ```
 
 
@@ -76,6 +76,10 @@ E.g.:
 ```bash
 python3 bin/pyxel run src/cometas.py
 ```
+
+### Controles
+Puedes encontrar los controles de cada juego al principio del script principal, o en la pantalla de `Leaderboard`/`Puntuaciones`.
+
 
 ### Rankings
 Tres de los cuatro juegos (Buscabombas, Cometas, y Arkanoid) cuentan con un sistema de rankings en el que se guardan las puntuaciones de los jugadores.  

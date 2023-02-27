@@ -2,12 +2,13 @@
 # *-* encoding=utf8 *-*
 
 # === Pong ===
-# Clásico juego de ping pong multijugador
+# Clásico juego de ping pong "multijugador" local.
+#
 # Las teclas "w" y "s" (arriba y abajo) controlan la pala de la izquierda 
 # Las flechas del teclado controlan el movimiento de la pala de la derecha 
 # Pulsar "esc" o "q" para salir.
 #
-# Puedes modificar las constantes del juego en el apartado "CONSTANTES"
+# Puedes modificar las constantes del juego en el apartado "CONSTANTES".
 #
 # AUTOR : Daniel Gómez Schwartz
 # FECHA : 2023-02-18
