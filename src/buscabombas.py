@@ -149,19 +149,8 @@ class CampoDeMinas (Entidad):
     def anchura_total (self) -> int:
         return self.columnas * 16
 
-    def __raton (self, encabezado : int, borde : int) -> (int, int):
-        x = pyxel.mouse_x - borde
-        y = pyxel.mouse_y - encabezado
-        if 0 <= x < self.anchura_total() and 0 <= y < self.altura_total():
-            return (x // 16, y // 16)
-        else:
-            return None
-
-    def actualizar (self, dt, encabezado : int, borde : int):
-        r = self.__raton(encabezado, borde)
-        if r is None:
-            return
-        x, y = r
+    def actualizar (self, dt, encabezado : int, borde : int, pos):
+        x, y = pos
         if self.nuevo:
             if self.bombas[y][x][1] == -1:
                 self.bombas[y][x] = (False, 0)
@@ -181,11 +170,8 @@ class CampoDeMinas (Entidad):
             else:
                 self.__descubrir(x, y)
 
-    def marcar (self, encabezado : int, borde : int):
-        r = self.__raton(encabezado, borde)
-        if r is None:
-            return
-        x, y = r
+    def marcar (self, encabezado : int, borde : int, pos):
+        x, y = pos
         (v, n) = self.bombas[y][x]
         if v is False:
             self.bombas[y][x] = (None, n)
@@ -287,14 +273,19 @@ class Juego:
             True, True, True, True)
         self.puntuaciones = Puntuaciones("buscabombas", ANCHURA_PANTALLA,
             ALTURA_PANTALLA, digitos=3, reverso=False, controles = [
-            ("Click Izquierdo", "Descubrir espacio"),
-            ("Click Derecho",   "Marcar espacio"),
+            ("Enter", "Descubrir espacio"),
+            ("Espacio",   "Marcar espacio"),
+            ("Arriba", "Arriba"),
+            ("Abajo", "Abajo"),
+            ("Izquierda", "Izquierda"),
+            ("Derecha", "Derecha"),
             ("Escape",          "Volver")])
         pyxel.run(self.actualizar, self.dibujar)
 
     def reset (self):
         self.campo = CampoDeMinas(FILAS, COLUMNAS, BOMBAS)
         self.estado = 0
+        self.pos = [0, 0]
         self.tiempo = 0
         self.timeout = 0
         self.cursor = 0
@@ -303,7 +294,6 @@ class Juego:
 
     def actualizar (self):
         if self.modo == self.JUGANDO:
-            pyxel.mouse(True)
             estado = self.campo.fin()
             if estado is True:
                 self.estado = 1
@@ -321,12 +311,25 @@ class Juego:
                 dt = 1 / FPS
                 self.tiempo += dt
                 self.sonido.actualizar(tiempo = self.tiempo)
-                if pyxel.btnp(pyxel.MOUSE_BUTTON_LEFT):
-                    self.campo.actualizar(dt, self.arriba, self.borde)
-                elif pyxel.btnp(pyxel.MOUSE_BUTTON_RIGHT):
-                    self.campo.marcar(self.arriba, self.borde)
+                if pyxel.btnp(pyxel.KEY_RETURN):
+                    self.campo.actualizar(dt, self.arriba, self.borde, self.pos)
+                elif pyxel.btnp(pyxel.KEY_SPACE):
+                    self.campo.marcar(self.arriba, self.borde, self.pos)
+                dx = dy = 0
+                if pyxel.btnp(pyxel.KEY_UP):
+                    dy = -1
+                if pyxel.btnp(pyxel.KEY_DOWN):
+                    dy = +1
+                if pyxel.btnp(pyxel.KEY_LEFT):
+                    dx = -1
+                if pyxel.btnp(pyxel.KEY_RIGHT):
+                    dx = +1
+                if 0 <= dx + self.pos[0] < COLUMNAS:
+                    self.pos[0] += dx
+                if 0 <= dy + self.pos[1] < FILAS:
+                    self.pos[1] += dy
+
         elif self.modo == self.PORTADA:
-            pyxel.mouse(False)
             if pyxel.btnp (pyxel.KEY_DOWN):
                 self.cursor += 1
             if pyxel.btnp (pyxel.KEY_UP):
@@ -343,7 +346,6 @@ class Juego:
                     del self.puntuaciones
                     pyxel.quit()
         elif self.modo == self.PUNTUACIONES:
-            pyxel.mouse(False)
             if self.puntuaciones.actualizar ():
                 self.modo = self.PORTADA
 
@@ -355,6 +357,7 @@ class Juego:
             pyxel.cls(0xD)
             self.dibujar_menu()
             self.campo.dibujar(self.arriba, self.borde)
+            pyxel.rectb(self.borde+self.pos[0]*16, self.arriba+self.pos[1]*16, 16, 16, 0x8)
             if self.timeout >= self.MAX_TIMEOUT:
                 texto(ANCHURA_PANTALLA//2, ALTURA_PANTALLA//2,
                     "Pulsa Enter para continuar...", True)
