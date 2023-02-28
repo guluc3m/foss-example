@@ -16,7 +16,7 @@ Incluye 4 juegos clásicos, listos para ser jugados y modificados:
 
 
 ## Prerequisitos
-Es necesario tener instalado Python 3.8 o superior.  
+Es necesario tener instalado Python 3.6.8 o superior.  
 Puedes comprobar tu versión de Python ejecutando en la terminal:
 ```bash
 python3 --version
