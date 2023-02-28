@@ -40,7 +40,7 @@ Puedes descargarte la última versión y el código fuente (`Source code (zip)`)
 
 O, usando la terminal:
 ```bash
-wget https://github.com/guluc3m/foss-example/archive/refs/tags/v0.1.1.zip
+wget https://github.com/guluc3m/foss-example/archive/refs/tags/v0.1.2.zip
 ```
 
 Una vez descargado el archivo comprimido, es necesario navegar a la carpeta de descarga y descomprimirlo:
