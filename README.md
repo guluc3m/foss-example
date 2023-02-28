@@ -16,7 +16,7 @@ Incluye 4 juegos clásicos, listos para ser jugados y modificados:
 
 
 ## Prerequisitos
-Es necesario tener instalado Python 3.8 o superior.  
+Es necesario tener instalado Python 3.6.8 o superior.  
 Puedes comprobar tu versión de Python ejecutando en la terminal:
 ```bash
 python3 --version
@@ -40,7 +40,7 @@ Puedes descargarte la última versión y el código fuente (`Source code (zip)`)
 
 O, usando la terminal:
 ```bash
-wget https://github.com/guluc3m/foss-example/archive/refs/tags/v0.1.0.zip
+wget https://github.com/guluc3m/foss-example/archive/refs/tags/v0.1.1.zip
 ```
 
 Una vez descargado el archivo comprimido, es necesario navegar a la carpeta de descarga y descomprimirlo:
