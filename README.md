@@ -69,12 +69,12 @@ pyxel run src/cometas.py
 
 Si no has podido instalar pyxel debes ejecutar el script principal de la librería con Python:
 ```bash
-python3 <pyxel> run <juego>.py
+python3 <juego>.py
 ```
 
 E.g.:
 ```bash
-python3 bin/pyxel run src/cometas.py
+python3 src/cometas.py
 ```
 
 ### Controles
