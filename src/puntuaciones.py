@@ -27,7 +27,7 @@ class Puntuaciones:
             altura    : str,
             digitos   : int,
             reverso   : bool,
-            controles : list[tuple[str]]):
+            controles : list):
         directorio = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         self.nombre = os.path.join(directorio, nombre + ".pts")
         self.archivo = None
@@ -191,7 +191,7 @@ class Puntuaciones:
                 i += 1
 
             for i in range(len(self.controles)):
-                x = pyxel.width // 2 - 24
+                x = self.anchura // 2 - 24
                 y = 24 + 10 * i
                 self.texto (x, y, "* %s : %s" % self.controles[i], False)
 

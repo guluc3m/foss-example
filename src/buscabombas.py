@@ -22,6 +22,8 @@ FILAS = 8
 COLUMNAS = 8
 BOMBAS = 10
 FPS = 30
+global ANCHURA_PANTALLA
+global ALTURA_PANTALLA
 
 # FILAS = 20
 # COLUMNAS = 20
@@ -266,6 +268,8 @@ class Juego:
     PUNTUACIONES = 2
     MAX_TIMEOUT = FPS * 4
     def __init__ (self):
+        global ANCHURA_PANTALLA
+        global ALTURA_PANTALLA
         # Iniciar pyxel
         self.reset()
         BORDE = 16
@@ -344,18 +348,20 @@ class Juego:
                 self.modo = self.PORTADA
 
     def dibujar (self):
+        global ANCHURA_PANTALLA
+        global ALTURA_PANTALLA
         pyxel.cls(0x0)
         if self.modo == self.JUGANDO:
             pyxel.cls(0xD)
             self.dibujar_menu()
             self.campo.dibujar(self.arriba, self.borde)
             if self.timeout >= self.MAX_TIMEOUT:
-                texto(pyxel.width//2, pyxel.height//2,
+                texto(ANCHURA_PANTALLA//2, ALTURA_PANTALLA//2,
                     "Pulsa Enter para continuar...", True)
         elif self.modo == self.PORTADA:
             pyxel.cls(0x9)
-            offx = max(0, (pyxel.width - 256) // 2)
-            offy = max(0, (pyxel.height - 256) // 2)
+            offx = max(0, (ANCHURA_PANTALLA - 256) // 2)
+            offy = max(0, (ALTURA_PANTALLA - 256) // 2)
             pyxel.blt(offx, offy, 1, 0, 0, 256, 256)
             pyxel.blt(offx + 108, offy + 196 + self.cursor * 16, 0, 0, 96, 8, 8, 0x0);
         elif self.modo == self.PUNTUACIONES:

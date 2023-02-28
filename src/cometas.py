@@ -40,7 +40,6 @@ import random
 import math
 import sys
 import os
-# import pyxel
 from puntuaciones import Puntuaciones
 import importlib
 path = '/'.join(sys.argv[0].split('/')[:-1])

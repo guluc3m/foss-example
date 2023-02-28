@@ -6,11 +6,16 @@
 
 # Controles: sí
 
-# AUTOR : José Antonio Verde Jiménez
-# FECHA : 2023-02-27
+# AUTORES : José Antonio Verde Jiménez y Luis Daniel Casais Mezquida
+# FECHA     : 2023-02-27
 
-import pyxel
 import math
+import sys
+import os
+import importlib
+path = '/'.join(sys.argv[0].split('/')[:-1])
+sys.path.append(os.path.join(path, "..", "lib"))
+pyxel = importlib.import_module("pyxel")
 
 FPS = 60
 SCREEN_HEIGHT = 200
